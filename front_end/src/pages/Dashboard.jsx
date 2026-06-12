@@ -191,6 +191,7 @@ const Dashboard = () => {
               onRecordingComplete={handleRecordingComplete}
               isRecording={isRecording}
               setIsRecording={setIsRecording}
+              isProcessing={uploadStatus?.type === 'processing'}
             />
           )}
           

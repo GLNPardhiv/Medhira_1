@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Square, Upload, Play, Pause, Trash2 } from 'lucide-react';
+import { Mic, Square, Upload, Play, Pause, Trash2, Loader2 } from 'lucide-react';
 import apiService from '../../services/api';
 
-const AudioRecorder = ({ onRecordingComplete, isRecording, setIsRecording, consultationId, onStatusUpdate }) => {
+const AudioRecorder = ({ onRecordingComplete, isRecording, setIsRecording, consultationId, onStatusUpdate, isProcessing }) => {
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -188,6 +188,7 @@ const AudioRecorder = ({ onRecordingComplete, isRecording, setIsRecording, consu
   };
 
   const getStatusMessage = (status) => {
+    if (isProcessing && !status) return 'Uploading and processing audio...';
     switch (status) {
       case 'uploaded': return 'Audio uploaded, starting processing...';
       case 'transcribing': return 'Transcribing audio...';
@@ -211,6 +212,8 @@ const AudioRecorder = ({ onRecordingComplete, isRecording, setIsRecording, consu
             <button 
               onClick={startRecording}
               className="record-button"
+              disabled={isProcessing}
+              style={isProcessing ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
             >
               <Mic size={20} />
               Start Recording
@@ -225,7 +228,7 @@ const AudioRecorder = ({ onRecordingComplete, isRecording, setIsRecording, consu
             </button>
           )}
           
-          <label className="upload-button">
+          <label className="upload-button" style={isProcessing ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
             <Upload size={18} />
             Upload Audio
             <input
@@ -233,19 +236,23 @@ const AudioRecorder = ({ onRecordingComplete, isRecording, setIsRecording, consu
               accept="audio/*"
               onChange={handleFileUpload}
               className="file-input-hidden"
+              disabled={isProcessing}
             />
           </label>
         </div>
 
         {/* Status Display */}
-        {(processingStatus || consultationId) && (
-          <div className="status-display">
-            <div className={`status-message ${getStatusColor(processingStatus)}`}>
+        {(processingStatus || isProcessing || consultationId) && (
+          <div className="status-display" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '1rem', padding: '1rem', background: '#f8fafc', borderRadius: '8px' }}>
+            {(isProcessing || ['uploaded', 'transcribing', 'summarizing'].includes(processingStatus)) && (
+              <Loader2 className="animate-spin" size={24} color="#2563eb" />
+            )}
+            <div className={`status-message ${getStatusColor(processingStatus || 'uploaded')}`}>
               {getStatusMessage(processingStatus)}
             </div>
             {consultationId && (
-              <div className="consultation-id">
-                Consultation ID: {consultationId}
+              <div className="consultation-id" style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#64748b' }}>
+                ID: {consultationId}
               </div>
             )}
           </div>
