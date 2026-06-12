@@ -17,7 +17,7 @@ const config = {
     temperature: 0.0,
   },
   gpt: {
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     temperature: 0.1,
     max_tokens: 1500,
   }
@@ -91,7 +91,7 @@ export const transcribeAudio = async (audioPath) => {
 };
 
 /**
- * Generate medical summary using GPT-4
+ * Generate medical summary using GPT-3.5
  * @param {string} transcript - Transcribed text from audio
  * @returns {Promise<Object>} Structured medical summary
  */
@@ -107,7 +107,7 @@ export const generateMedicalSummary = async (transcript) => {
       return await mockGenerateMedicalSummary(transcript);
     }
 
-    console.log('🎯 Generating medical summary with GPT-4...');
+    console.log('🎯 Generating medical summary with GPT-3.5...');
 
     const prompt = MEDICAL_SUMMARY_PROMPT.replace('{transcript}', transcript);
 
@@ -131,10 +131,10 @@ export const generateMedicalSummary = async (transcript) => {
     
     try {
       const summaryData = JSON.parse(summaryText);
-      console.log('✅ GPT-4 medical summary generated successfully');
+      console.log('✅ GPT-3.5 medical summary generated successfully');
       return summaryData;
     } catch (parseError) {
-      console.error('❌ Failed to parse GPT-4 response as JSON:', summaryText);
+      console.error('❌ Failed to parse GPT-3.5 response as JSON:', summaryText);
       // Attempt to extract JSON if wrapped in other text
       const jsonMatch = summaryText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -154,7 +154,7 @@ export const generateMedicalSummary = async (transcript) => {
     }
 
   } catch (error) {
-    console.error('❌ GPT-4 medical summary generation failed:', error.message);
+    console.error('❌ GPT-3.5 medical summary generation failed:', error.message);
     // Auto-fallback to mock data on any error
     console.log('🔧 Falling back to mock medical summary due to API error');
     return await mockGenerateMedicalSummary(transcript);

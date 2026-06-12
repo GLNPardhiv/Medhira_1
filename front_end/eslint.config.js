@@ -1,14 +1,13 @@
 import js from '@eslint/js'
 import globals from 'globals'
-import { defineConfig, globalIgnores } from 'eslint/config'
 
-export default defineConfig([
-  globalIgnores(['dist']),
+export default [
+  js.configs.recommended,
+  {
+    ignores: ['dist']
+  },
   {
     files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: {
@@ -26,4 +25,4 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
-])
+]
